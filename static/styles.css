@@ -1,0 +1,118 @@
+*{
+    padding: 0%;
+    margin: 0%;
+    box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+#one, #two{
+    /* background-image: url('../img/starwberry.png'); */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.btn{
+    width: 5rem;
+    height: 5rem;
+    border-style: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(45deg, #cc2b5e, #753a88);
+    cursor: pointer;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.btn:hover, .level-btn:hover{
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+    -webkit-filter: brightness(0.85);
+    filter: brightness(0.8);
+}
+
+
+#body-div {
+    width: 100vw;
+    height: 100vh;
+    padding: 0rem 1rem;
+    background: linear-gradient(90deg, #000428, #004e92);
+}
+
+#levels-div{
+    height: 4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding-top: 0.3rem;
+}
+
+.level-btn{
+    width: 6.9rem;
+    height: 3.5rem;
+    border-style: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(45deg, #cc2b5e, #753a88);
+    color: white;
+    cursor: pointer;
+}
+
+#timer-div{
+    height: 4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding-top: 1rem;
+    color: white;
+}
+
+#buttons-div{
+    opacity: 0.8;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+/* MEDIA ----------------------------------------------------- */
+@media screen and (max-width: 360px) {
+    .level-btn {
+        width: 5rem;
+        height: 3.5rem;
+    }
+
+    .btn {
+        width: 4.9rem;
+        height: 5.5rem;
+    }
+}
+
+@media screen and (min-width: 390px) {
+    .btn{
+        width: 5.4rem;
+        height: 6rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    #body-div {
+        padding: 0rem 12rem;
+    }
+
+}
+
+@media screen and (min-width: 1080px) {
+    #body-div {
+        padding: 0rem 20rem;
+    }
+
+}
+
