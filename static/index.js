@@ -152,7 +152,7 @@ function StartGameTimer(){
     timerId = setInterval(()=>{
         const minutes = Math.floor(time/60);
         let seconds = time % 60;
-        seconds = seconds < 2 ? '0' + seconds : seconds;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
         timerElem.innerHTML = `${minutes}:${seconds}`;
         time--;
         if(time < 0 || matches === 11){
