@@ -123,13 +123,17 @@ function resetAndStartGame(){
 
 }
 
+function displayGameResult(){
+    
+}
+
 function flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
 
     const buttonElem = document.getElementById(`${buttonId}`);
     buttonElem.style.backgroundImage = buttonsImagesMap.get(buttonId);
 
     // if button image flipped permenantly, it cant be flipped temporarly
-    if(!permFlippedButtons.includes(buttonId)){
+    if(!permFlippedButtons.includes(buttonId) && tempFlippedButtons[0] !== buttonId){
         tempFlippedButtons.push(buttonId);
     }     
     // try to match images only if exactly two images are flipped temporarly
@@ -156,7 +160,6 @@ function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
         // enable all btns after the two imgs unflipped
         document.querySelectorAll('.btn').forEach(btn => {
         btn.disabled = false;});
-        tempFlippedButtons.splice(0, tempFlippedButtons.length);
     } else {
         // wait one second and unflipp them
         setTimeout(unflipp, 1000, buttonId1, buttonId2);
@@ -165,22 +168,9 @@ function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
             // enable all btns after the two imgs unflipped
             document.querySelectorAll('.btn').forEach(btn => {
             btn.disabled = false;});
-            tempFlippedButtons.splice(0, tempFlippedButtons.length);
         }, 1000);
     }
-
-    // clear the temp flipped buttons 
-    // tempFlippedButtons.splice(0, tempFlippedButtons.length);
-    //enable buttons after matching process is complete
-    // if(tempFlippedButtons.length===0){
-    //     console.log('timeout');
-    //     setTimeout(function()
-    //     {
-    //         // enable all btns after the two imgs unflipped
-    //         document.querySelectorAll('.btn').forEach(btn => {
-    //         btn.disabled = false;});
-    //     }, 1000);
-    // }
+    tempFlippedButtons.splice(0, tempFlippedButtons.length);
 }
 
 function unflipp(button1, button2) {
