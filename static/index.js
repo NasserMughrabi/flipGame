@@ -171,6 +171,10 @@ function displayGameResult(result){
     const resultElem = document.querySelector('#result-h1');
     resultElem.innerHTML = `You ${result}`;
     resultElem.style.display = 'block';
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.disabled = true;
+        console.log('last');
+    });
 }
 
 function flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
