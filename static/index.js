@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function (){
 
     let buttonsImagesMap = new Map();
+    // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
+    let tempFlippedButtons = new Array();
+    let permFlippedButtons = new Array();
     // default timer
     document.getElementById('timer-i').innerHTML = '2:30';
     // disable all card buttons
@@ -8,15 +11,17 @@ document.addEventListener('DOMContentLoaded', function (){
     // at level btn click do the following
     document.querySelector('#levels-div').addEventListener('click', e=>{
         const buttonId = e.target.id;
+        // clean these list up every round
+        buttonsImagesMap = new Map()
+        tempFlippedButtons = new Array();
+        permFlippedButtons = new Array();
         selectGameLevel(buttonId);
         buttonsImagesMap = assignImagesToButtons();
         flipAllImages(buttonsImagesMap);
         // resetTimeAndStart();
     });
     
-    // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
-    let tempFlippedButtons = new Array();
-    let permFlippedButtons = new Array();
+    
 
     // click event handler
     document.querySelector('#buttons-div').addEventListener('click', e=>{
@@ -124,7 +129,7 @@ function resetAndStartGame(){
 }
 
 function displayGameResult(){
-    
+
 }
 
 function flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
