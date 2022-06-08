@@ -1,28 +1,19 @@
 document.addEventListener('DOMContentLoaded', function (){
 
+    let buttonsImagesMap = new Map();
     // default timer
     document.getElementById('timer-i').innerHTML = '2:30';
-    document.querySelector('#levels-div').addEventListener('click',function(e){chooseGameLevel(e);});
-
-    // Seting up images and way to access them and assign them to btns 
-    imageIndexes = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11];
-    backgroundImages = [
-        {url:"url('../img/avocado.png')"},
-        {url:"url('../img/banana.png')"},
-        {url:"url('../img/blueberry.png')"},
-        {url:"url('../img/eggplant.png')"},
-        {url:"url('../img/grapes.png')"},
-        {url:"url('../img/mango.png')"},
-        {url:"url('../img/pear.png')"},
-        {url:"url('../img/pepper.png')"},
-        {url:"url('../img/pumpkin.png')"},
-        {url:"url('../img/strawberry.png')"},
-        {url:"url('../img/tomato.png')"},
-        {url:"url('../img/watermelon.png')"},
-    ];
+    // disable all card buttons
+    document.querySelectorAll('.btn').forEach(btn => {btn.disabled = true;});
+    // at level btn click do the following
+    document.querySelector('#levels-div').addEventListener('click', e=>{
+        const buttonId = e.target.id;
+        selectGameLevel(buttonId);
+        buttonsImagesMap = assignImagesToButtons();
+        flipAllImages(buttonsImagesMap);
+        // resetTimeAndStart();
+    });
     
-    // map to keep track of which img belong to which btn
-    let buttonsImagesMap = new Map();
     // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
     let tempFlippedButtons = new Array();
     let permFlippedButtons = new Array();
@@ -30,15 +21,13 @@ document.addEventListener('DOMContentLoaded', function (){
     // click event handler
     document.querySelector('#buttons-div').addEventListener('click', e=>{
         const buttonId = e.target.id;
-        flipBtnAndMatchImg(buttonId, imageIndexes, backgroundImages, buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
+        flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
         document.querySelector('#buttons-div').style.backgroundImage = 'none';
     });
+
 });
 
-function chooseGameLevel(e){
-    // find what button the user clicked within the div
-    const buttonId = e.target.id;
-
+function selectGameLevel(buttonId){
     // determine the timing level and display it
     if(buttonId === 'easy-btn'){
         displayTimeAndBorder('easy');
@@ -50,7 +39,6 @@ function chooseGameLevel(e){
         displayTimeAndBorder('hard');
     }
 }
-
 
 function displayTimeAndBorder(level){
     if(level === 'easy'){
@@ -71,43 +59,84 @@ function displayTimeAndBorder(level){
         document.getElementById('inter-btn').style.border = "hidden";
         document.getElementById('hard-btn').style.border = "0.2rem solid white";
     }
+}
 
-    resetAndStartGame();
+function assignImagesToButtons(){
+    // map to store the mapping between btns and images
+    let buttonsImagesMap = new Map();
+
+    // Seting up images and way to access them and assign them to btns 
+    imageIndexes = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11];
+    backgroundImages = [
+        {url:"url('../img/avocado.png')"},
+        {url:"url('../img/banana.png')"},
+        {url:"url('../img/blueberry.png')"},
+        {url:"url('../img/eggplant.png')"},
+        {url:"url('../img/grapes.png')"},
+        {url:"url('../img/mango.png')"},
+        {url:"url('../img/pear.png')"},
+        {url:"url('../img/pepper.png')"},
+        {url:"url('../img/pumpkin.png')"},
+        {url:"url('../img/strawberry.png')"},
+        {url:"url('../img/tomato.png')"},
+        {url:"url('../img/watermelon.png')"},
+    ];
+
+    document.querySelectorAll('.btn').forEach(btn=>{
+        const btnId = btn.id;
+        // find a random number between 0 and numbers.length-1
+        const randomIndex = Math.floor(Math.random() * imageIndexes.length);
+        const imageIndex = imageIndexes[randomIndex];
+        // store the pair in a map for matching calculation later
+        buttonsImagesMap.set(btnId, backgroundImages[imageIndex].url);
+        // remove the number from array, so above random expression works correctly at all time
+        imageIndexes.splice(randomIndex, 1);
+        
+    });
+    return buttonsImagesMap;
+    
+}
+
+function flipAllImages(buttonsImagesMap){
+    document.querySelectorAll('.btn').forEach(btn => {
+        const btnId = btn.id;
+        btn.style.backgroundImage = buttonsImagesMap.get(btnId);
+    });
+    
+    setTimeout(unflippAllImages, 3500);
+}
+
+function unflippAllImages(){
+    document.querySelectorAll('.btn').forEach(btn => {
+        const btnId = btn.id;
+        btn.style.background = 'linear-gradient(45deg, #cc2b5e, #753a88)';
+        btn.style.backgroundPosition = 'center';
+        btn.style.backgroundRepeat = 'no-repeat';
+        btn.style.backgroundSize = 'cover';
+    });
+
+    // enable buttons
+    document.querySelectorAll('.btn').forEach(btn => {btn.disabled = false;});
 }
 
 function resetAndStartGame(){
 
 }
 
-
-function flipBtnAndMatchImg(buttonId, imageIndexes, backgroundImages, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
+function flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
 
     const buttonElem = document.getElementById(`${buttonId}`);
-    if(buttonsImagesMap.get(buttonId)){
-        buttonElem.style.backgroundImage = buttonsImagesMap.get(buttonId);
-    } 
-    else{
-        // find a random number between 0 and numbers.length-1
-        const randomIndex = Math.floor(Math.random() * imageIndexes.length);
-        const imageNum = imageIndexes[randomIndex];
-        buttonElem.style.backgroundImage = backgroundImages[imageNum].url;
-        // store the pair in a map for matching calculation
-        buttonsImagesMap.set(buttonId, backgroundImages[imageNum].url);
-        // remove the number from array, so above random expression works correctly all the time
-        imageIndexes.splice(randomIndex, 1);
-    }
-    
+    buttonElem.style.backgroundImage = buttonsImagesMap.get(buttonId);
+
     // if button image flipped permenantly, it cant be flipped temporarly
     if(!permFlippedButtons.includes(buttonId)){
         tempFlippedButtons.push(buttonId);
     }     
     // try to match images only if exactly two images are flipped temporarly
-    if(tempFlippedButtons.length == 2){
+    if(tempFlippedButtons.length >= 2){
         matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
     }
 }
-
-
 
 function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
     // disable all other buttons when two are flipped temporarly
@@ -124,24 +153,35 @@ function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
     if(imgURL1 === imgURL2){
         permFlippedButtons.push(buttonId1);
         permFlippedButtons.push(buttonId2);
+        // enable all btns after the two imgs unflipped
+        document.querySelectorAll('.btn').forEach(btn => {
+        btn.disabled = false;});
+        tempFlippedButtons.splice(0, tempFlippedButtons.length);
     } else {
         // wait one second and unflipp them
         setTimeout(unflipp, 1000, buttonId1, buttonId2);
+        setTimeout(function()
+        {
+            // enable all btns after the two imgs unflipped
+            document.querySelectorAll('.btn').forEach(btn => {
+            btn.disabled = false;});
+            tempFlippedButtons.splice(0, tempFlippedButtons.length);
+        }, 1000);
     }
 
     // clear the temp flipped buttons 
-    tempFlippedButtons.splice(0, tempFlippedButtons.length);
+    // tempFlippedButtons.splice(0, tempFlippedButtons.length);
     //enable buttons after matching process is complete
-    if(tempFlippedButtons.length===0){
-        console.log('timeout');
-        setTimeout(function()
-        {
-            document.querySelectorAll('.btn').forEach(btn => {
-            btn.disabled = false;});
-        }, 1000);
-    }
+    // if(tempFlippedButtons.length===0){
+    //     console.log('timeout');
+    //     setTimeout(function()
+    //     {
+    //         // enable all btns after the two imgs unflipped
+    //         document.querySelectorAll('.btn').forEach(btn => {
+    //         btn.disabled = false;});
+    //     }, 1000);
+    // }
 }
-
 
 function unflipp(button1, button2) {
     const buttonId1 = document.getElementById(`${button1}`);
