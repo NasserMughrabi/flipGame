@@ -155,9 +155,9 @@ function StartGameTimer(){
         seconds = seconds < 10 ? '0' + seconds : seconds;
         timerElem.innerHTML = `${minutes}:${seconds}`;
         time--;
-        if(time < 0 || matches === 11){
+        if(time < 0 || matches === 12){
             clearInterval(timerId);
-            if(matches === 11){
+            if(matches === 12){
                 displayGameResult('Win');
             }else{
                 displayGameResult('Lose');

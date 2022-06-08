@@ -15,13 +15,6 @@
 }
 
 
-#one, #two{
-    /* background-image: url('../img/starwberry.png'); */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
 .btn{
     width: 5rem;
     height: 5rem;
@@ -102,7 +95,6 @@
 @media screen and (min-width: 390px) {
     .btn{
         width: 5.4rem;
-        height: 6rem;
     }
 }
 
