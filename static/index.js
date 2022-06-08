@@ -3,20 +3,18 @@ let matches = 0;
 let timerId = -1;
 
 document.addEventListener('DOMContentLoaded', function (){
-    const buttonId = e.target.id;
-
     // mappings between buttons and images
     // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
     let buttonsImagesMap = new Map();
     let tempFlippedButtons = new Array();
     let permFlippedButtons = new Array();
     
-    // disable all card buttons and set default timer 
-    document.getElementById('timer-i').innerHTML = '2:00';
+    // disable all card buttons 
     document.querySelectorAll('.btn').forEach(btn => {btn.disabled = true;});
 
     // at level btn click do the following
     document.querySelector('#levels-div').addEventListener('click', e=>{
+        const buttonId = e.target.id;
         // since clicking any of the levels btns means a new round/game,
         // resets are needed for the followings 
         // resets for timer, number of player's matches, result display, and countdown interval
