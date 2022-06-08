@@ -173,7 +173,6 @@ function displayGameResult(result){
     resultElem.style.display = 'block';
     document.querySelectorAll('.btn').forEach(btn => {
         btn.disabled = true;
-        console.log('last');
     });
 }
 
