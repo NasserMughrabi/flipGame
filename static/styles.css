@@ -95,19 +95,27 @@
 @media screen and (min-width: 390px) {
     .btn{
         width: 5.4rem;
+        /* height: 6rem; */
     }
 }
 
 @media screen and (min-width: 1024px) {
     #body-div {
-        padding: 0rem 12rem;
+        padding: 0rem 14rem;
     }
 
 }
 
 @media screen and (min-width: 1080px) {
     #body-div {
-        padding: 0rem 20rem;
+        padding: 0rem 22rem;
+    }
+
+}
+
+@media screen and (min-width: 1100px) {
+    #body-div {
+        padding: 0rem 24rem;
     }
 
 }
