@@ -10,6 +10,10 @@
     user-select: none;
 }
 
+#result-h1{
+    display: none;
+}
+
 
 #one, #two{
     /* background-image: url('../img/starwberry.png'); */

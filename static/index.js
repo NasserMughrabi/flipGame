@@ -1,29 +1,45 @@
-document.addEventListener('DOMContentLoaded', function (){
+let time = 0;
+let matches = 0;
+let timerId = -1;
 
-    let buttonsImagesMap = new Map();
+document.addEventListener('DOMContentLoaded', function (){
+    const buttonId = e.target.id;
+
+    // mappings between buttons and images
     // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
+    let buttonsImagesMap = new Map();
     let tempFlippedButtons = new Array();
     let permFlippedButtons = new Array();
-    // default timer
-    document.getElementById('timer-i').innerHTML = '2:30';
-    // disable all card buttons
+    
+    // disable all card buttons and set default timer 
+    document.getElementById('timer-i').innerHTML = '2:00';
     document.querySelectorAll('.btn').forEach(btn => {btn.disabled = true;});
+
     // at level btn click do the following
     document.querySelector('#levels-div').addEventListener('click', e=>{
-        const buttonId = e.target.id;
-        // clean these list up every round
+        // since clicking any of the levels btns means a new round/game,
+        // resets are needed for the followings 
+        // resets for timer, number of player's matches, result display, and countdown interval
+        time = 0;
+        matches = 0;
+        document.querySelector('#result-h1').style.display = 'none';
+        if(timerId !== -1){
+            clearInterval(timerId);
+            timerId = -1;
+        }
+
+        // clean these lists up every round
         buttonsImagesMap = new Map()
         tempFlippedButtons = new Array();
         permFlippedButtons = new Array();
+
+        // at click do the following
         selectGameLevel(buttonId);
         buttonsImagesMap = assignImagesToButtons();
         flipAllImages(buttonsImagesMap);
-        // resetTimeAndStart();
     });
     
-    
-
-    // click event handler
+    // click event handler for cards btns
     document.querySelector('#buttons-div').addEventListener('click', e=>{
         const buttonId = e.target.id;
         flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
@@ -47,19 +63,25 @@ function selectGameLevel(buttonId){
 
 function displayTimeAndBorder(level){
     if(level === 'easy'){
-        document.getElementById('timer-i').innerHTML = '2:30';
+        const startingMins = 2;
+        time = startingMins * 60;
+        document.getElementById('timer-i').innerHTML = '2:00';
         document.getElementById('easy-btn').style.border = "0.2rem solid white";
         document.getElementById('inter-btn').style.border = "hidden";
         document.getElementById('hard-btn').style.border = "hidden";
     }
     else if(level === 'inter'){
-        document.getElementById('timer-i').innerHTML = '1:30';
+        const startingMins = 1;
+        time = startingMins * 60;
+        document.getElementById('timer-i').innerHTML = '1:00';
         document.getElementById('easy-btn').style.border = "hidden";
         document.getElementById('inter-btn').style.border = "0.2rem solid white";
         document.getElementById('hard-btn').style.border = "hidden";
     }
     else {
-        document.getElementById('timer-i').innerHTML = '1:00';
+        const startingMins = 0.5;
+        time = startingMins * 60;
+        document.getElementById('timer-i').innerHTML = '0:30';
         document.getElementById('easy-btn').style.border = "hidden";
         document.getElementById('inter-btn').style.border = "hidden";
         document.getElementById('hard-btn').style.border = "0.2rem solid white";
@@ -122,14 +144,35 @@ function unflippAllImages(){
 
     // enable buttons
     document.querySelectorAll('.btn').forEach(btn => {btn.disabled = false;});
+    
+    // start timer and game
+    StartGameTimer();
 }
 
-function resetAndStartGame(){
-
+function StartGameTimer(){
+    const timerElem = document.getElementById('timer-i');
+    timerId = setInterval(()=>{
+        const minutes = Math.floor(time/60);
+        let seconds = time % 60;
+        seconds = seconds < 2 ? '0' + seconds : seconds;
+        timerElem.innerHTML = `${minutes}:${seconds}`;
+        time--;
+        if(time < 0 || matches === 11){
+            clearInterval(timerId);
+            if(matches === 11){
+                displayGameResult('Win');
+            }else{
+                displayGameResult('Lose');
+            }
+        }
+    }, 1000);
 }
 
-function displayGameResult(){
 
+function displayGameResult(result){
+    const resultElem = document.querySelector('#result-h1');
+    resultElem.innerHTML = `You ${result}`;
+    resultElem.style.display = 'block';
 }
 
 function flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
@@ -160,6 +203,7 @@ function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
     const imgURL2 = buttonsImagesMap.get(buttonId2);
     // if urls/images match, add them to flipped permenantly list
     if(imgURL1 === imgURL2){
+        matches++;
         permFlippedButtons.push(buttonId1);
         permFlippedButtons.push(buttonId2);
         // enable all btns after the two imgs unflipped

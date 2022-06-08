@@ -1,4 +1,3 @@
-- match images and keep them displayed
 - start game and timer
+- display game result when timer is out or when player is done
 - do a 2d flip
-- 
