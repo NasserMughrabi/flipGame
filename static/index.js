@@ -1,49 +1,43 @@
+
+let buttonsImagesMap = new Map();
+let tempFlippedButtons = new Array();
+let permFlippedButtons = new Array();
+
+// disable all buttons until level chosen
+document.querySelectorAll('.btn').forEach(btn => {btn.disabled = true;});
+
 let time = 0;
 let matches = 0;
 let timerId = -1;
+document.querySelector('#levels-div').addEventListener('click', e=>{
+    disableLevelBtns();
 
-document.addEventListener('DOMContentLoaded', function (){
-    // mappings between buttons and images
-    // arrays to keep track of wether a btn-img is temporarly or permenantly flipped
-    let buttonsImagesMap = new Map();
-    let tempFlippedButtons = new Array();
-    let permFlippedButtons = new Array();
-    
-    // disable all card buttons 
-    document.querySelectorAll('.btn').forEach(btn => {btn.disabled = true;});
+    // level click = new round
+    const buttonId = e.target.id;
+    time = 0;
+    matches = 0;
+    document.querySelector('#result-h1').style.display = 'none';
+    if(timerId !== -1){
+        clearInterval(timerId);
+        timerId = -1;
+    }
 
-    // at level btn click do the following
-    document.querySelector('#levels-div').addEventListener('click', e=>{
-        const buttonId = e.target.id;
-        // since clicking any of the levels btns means a new round/game,
-        // resets are needed for the followings 
-        // resets for timer, number of player's matches, result display, and countdown interval
-        time = 0;
-        matches = 0;
-        document.querySelector('#result-h1').style.display = 'none';
-        if(timerId !== -1){
-            clearInterval(timerId);
-            timerId = -1;
-        }
+    // clean these lists up every round
+    buttonsImagesMap = new Map()
+    tempFlippedButtons = new Array();
+    permFlippedButtons = new Array();
 
-        // clean these lists up every round
-        buttonsImagesMap = new Map()
-        tempFlippedButtons = new Array();
-        permFlippedButtons = new Array();
+    selectGameLevel(buttonId);
+    buttonsImagesMap = assignImagesToButtons();
+    flipAllImages(buttonsImagesMap);
+});
 
-        // at click do the following
-        selectGameLevel(buttonId);
-        buttonsImagesMap = assignImagesToButtons();
-        flipAllImages(buttonsImagesMap);
-    });
-    
-    // click event handler for cards btns
-    document.querySelector('#buttons-div').addEventListener('click', e=>{
-        const buttonId = e.target.id;
-        flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
-        document.querySelector('#buttons-div').style.backgroundImage = 'none';
-    });
-
+// click event handler for cards btns
+document.querySelector('#buttons-div').addEventListener('click', e=>{
+    const buttonId = e.target.id;
+    flipAndMatch(buttonId, buttonsImagesMap, tempFlippedButtons, permFlippedButtons);
+    // disable div containing all btns from changing background at click
+    document.querySelector('#buttons-div').style.backgroundImage = 'none';
 });
 
 function selectGameLevel(buttonId){
@@ -60,11 +54,12 @@ function selectGameLevel(buttonId){
 }
 
 function displayTimeAndBorder(level){
+    const btnStyle = "0.2rem solid white";
     if(level === 'easy'){
         const startingMins = 2;
         time = startingMins * 60;
         document.getElementById('timer-i').innerHTML = '2:00';
-        document.getElementById('easy-btn').style.border = "0.2rem solid white";
+        document.getElementById('easy-btn').style.border = btnStyle;
         document.getElementById('inter-btn').style.border = "hidden";
         document.getElementById('hard-btn').style.border = "hidden";
     }
@@ -73,7 +68,7 @@ function displayTimeAndBorder(level){
         time = startingMins * 60;
         document.getElementById('timer-i').innerHTML = '1:00';
         document.getElementById('easy-btn').style.border = "hidden";
-        document.getElementById('inter-btn').style.border = "0.2rem solid white";
+        document.getElementById('inter-btn').style.border = btnStyle;
         document.getElementById('hard-btn').style.border = "hidden";
     }
     else {
@@ -82,15 +77,15 @@ function displayTimeAndBorder(level){
         document.getElementById('timer-i').innerHTML = '0:30';
         document.getElementById('easy-btn').style.border = "hidden";
         document.getElementById('inter-btn').style.border = "hidden";
-        document.getElementById('hard-btn').style.border = "0.2rem solid white";
+        document.getElementById('hard-btn').style.border = btnStyle;
     }
 }
 
 function assignImagesToButtons(){
-    // map to store the mapping between btns and images
+    // map to store the mappings between btns and images
     let buttonsImagesMap = new Map();
 
-    // Seting up images and way to access them and assign them to btns 
+    // array to limit using each image to exactly two times 
     imageIndexes = [0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11];
     backgroundImages = [
         {url:"url('../img/avocado.png')"},
@@ -107,14 +102,13 @@ function assignImagesToButtons(){
         {url:"url('../img/watermelon.png')"},
     ];
 
+    // assiging images to btns 
     document.querySelectorAll('.btn').forEach(btn=>{
         const btnId = btn.id;
-        // find a random number between 0 and numbers.length-1
         const randomIndex = Math.floor(Math.random() * imageIndexes.length);
         const imageIndex = imageIndexes[randomIndex];
-        // store the pair in a map for matching calculation later
         buttonsImagesMap.set(btnId, backgroundImages[imageIndex].url);
-        // remove the number from array, so above random expression works correctly at all time
+        // remove the number from array, so above random expression works correctly at all times
         imageIndexes.splice(randomIndex, 1);
         
     });
@@ -150,6 +144,8 @@ function unflippAllImages(){
 function StartGameTimer(){
     const timerElem = document.getElementById('timer-i');
     timerId = setInterval(()=>{
+        // enable level btns after timer starts
+        enableLevelBtns();
         const minutes = Math.floor(time/60);
         let seconds = time % 60;
         seconds = seconds < 10 ? '0' + seconds : seconds;
@@ -158,18 +154,19 @@ function StartGameTimer(){
         if(time < 0 || matches === 12){
             clearInterval(timerId);
             if(matches === 12){
-                displayGameResult('Win');
+                displayGameResult('Win', '#5df35d');
             }else{
-                displayGameResult('Lose');
+                displayGameResult('Lose', '#f14242');
             }
         }
     }, 1000);
 }
 
 
-function displayGameResult(result){
+function displayGameResult(result, color){
     const resultElem = document.querySelector('#result-h1');
     resultElem.innerHTML = `You ${result}`;
+    resultElem.style.color = color;
     resultElem.style.display = 'block';
     document.querySelectorAll('.btn').forEach(btn => {
         btn.disabled = true;
@@ -221,6 +218,18 @@ function matchImages(buttonsImagesMap, tempFlippedButtons, permFlippedButtons){
         }, 1000);
     }
     tempFlippedButtons.splice(0, tempFlippedButtons.length);
+}
+
+function enableLevelBtns (){
+    document.querySelector('#easy-btn').disabled = false;
+    document.querySelector('#inter-btn').disabled = false;
+    document.querySelector('#hard-btn').disabled = false;
+}
+
+function disableLevelBtns (){
+    document.querySelector('#easy-btn').disabled = true;
+    document.querySelector('#inter-btn').disabled = true;
+    document.querySelector('#hard-btn').disabled = true;
 }
 
 function unflipp(button1, button2) {

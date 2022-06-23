@@ -73,13 +73,6 @@
 }
 
 
-
-
-
-
-
-
-/* MEDIA ----------------------------------------------------- */
 @media screen and (max-width: 360px) {
     .level-btn {
         width: 5rem;
@@ -95,7 +88,6 @@
 @media screen and (min-width: 390px) {
     .btn{
         width: 5.4rem;
-        /* height: 6rem; */
     }
 }
 
@@ -103,20 +95,17 @@
     #body-div {
         padding: 0rem 14rem;
     }
-
 }
 
 @media screen and (min-width: 1080px) {
     #body-div {
         padding: 0rem 22rem;
     }
-
 }
 
 @media screen and (min-width: 1100px) {
     #body-div {
         padding: 0rem 24rem;
     }
-
 }
 
