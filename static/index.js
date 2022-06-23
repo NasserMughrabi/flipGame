@@ -1,4 +1,3 @@
-
 let buttonsImagesMap = new Map();
 let tempFlippedButtons = new Array();
 let permFlippedButtons = new Array();
